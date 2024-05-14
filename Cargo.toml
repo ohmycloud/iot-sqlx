@@ -13,7 +13,13 @@ path = "src/main.rs"
 name = "sqlr"
 path = "src/sqlr.rs"
 
+[lib]
+name = "iot_sqlx"
+path = "src/lib.rs"
+
 [dependencies]
 hex = "0.4.3"
 sqlx = { version = "0.7", features = [ "runtime-async-std", "tls-rustls", "mysql" ] }
 async-std = { version = "1.12.0", features = ["attributes"] }
+serde = { version = "1.0.201", features = ["derive"] }
+config = "0.14.0"

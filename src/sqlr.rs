@@ -1,12 +1,12 @@
 use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
 use sqlx::Row;
+use iot_sqlx::configuration::{get_configuration, Settings, MysqlSettings};
 
 #[derive(Debug)]
 struct PropertyConfig {
     server_ip: String,
     server_port: i32,
     terminal_id: String,
-    id: i32,
     station_id: String,
     info_obj_addr: String,
     protocol_name: String,
@@ -29,10 +29,14 @@ struct PropertyConfig {
 
 #[async_std::main]
 async fn main() -> Result<(), sqlx::Error> {
+    let configuration: Settings = get_configuration().expect("Failed to read configuration");
+    let mysqlConf: MysqlSettings = configuration.mysql;
+    let connection_str = format!("{}:{}@{}/{}", mysqlConf.username, mysqlConf.password, mysqlConf.hostname, mysqlConf.database);
+
     // Create a connection pool
     let pool = MySqlPoolOptions::new()
-        .max_connections(5)
-        .connect("mysql://user:password@localhost/iot_protocol_global").await?;
+        .max_connections(mysqlConf.max_connections)
+        .connect(&connection_str).await?;
 
     // Make a simple query to return the given parameter (use a question mark `?` instead of `$1` for MySQL/MariaDB)
     let row = sqlx::query(r#"
@@ -47,7 +51,6 @@ async fn main() -> Result<(), sqlx::Error> {
             server_ip: row.get("server_ip"),
             server_port: row.get("server_port"),
             terminal_id: row.get("terminal_id"),
-            id: row.get("id"),
             station_id: row.get("station_id"),
             info_obj_addr: row.get("info_obj_addr"),
             protocol_name: row.get("protocol_name"),
@@ -67,9 +70,11 @@ async fn main() -> Result<(), sqlx::Error> {
             comment: row.get("comment"),
             unit: row.get("unit"),
         })
-        .fetch_one(&pool).await?;
+        .fetch_all(&pool).await?;
 
-    println!("{:?}", row);
+    for i in row {
+        println!("{:?}", i);
+    }
 
     Ok(())
 }

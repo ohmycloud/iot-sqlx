@@ -1,0 +1,6 @@
+#! configuration/development.yaml
+
+mysql:
+  username: "username"
+  password: "password"
+  hostname: "localhost"

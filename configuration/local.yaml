@@ -1,0 +1,6 @@
+#! configuration/local.yaml
+
+mysql:
+  username: "username"
+  password: "password"
+  hostname: "localhost"
