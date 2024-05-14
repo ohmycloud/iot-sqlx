@@ -1,0 +1,19 @@
+[package]
+name = "iec104"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "iec104"
+path = "src/main.rs"
+
+[[bin]]
+name = "sqlr"
+path = "src/sqlr.rs"
+
+[dependencies]
+hex = "0.4.3"
+sqlx = { version = "0.7", features = [ "runtime-async-std", "tls-rustls", "mysql" ] }
+async-std = { version = "1.12.0", features = ["attributes"] }
