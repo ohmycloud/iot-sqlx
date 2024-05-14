@@ -30,12 +30,13 @@ struct PropertyConfig {
 #[async_std::main]
 async fn main() -> Result<(), sqlx::Error> {
     let configuration: Settings = get_configuration().expect("Failed to read configuration");
-    let mysqlConf: MysqlSettings = configuration.mysql;
-    let connection_str = format!("{}:{}@{}/{}", mysqlConf.username, mysqlConf.password, mysqlConf.hostname, mysqlConf.database);
+    let mysql: MysqlSettings = configuration.mysql;
+    let connection_str = format!("mysql://{}:{}@{}/{}", mysql.username, mysql.password, mysql.hostname, mysql.database);
+    println!("{:?}", connection_str);
 
     // Create a connection pool
     let pool = MySqlPoolOptions::new()
-        .max_connections(mysqlConf.max_connections)
+        .max_connections(mysql.max_connections)
         .connect(&connection_str).await?;
 
     // Make a simple query to return the given parameter (use a question mark `?` instead of `$1` for MySQL/MariaDB)

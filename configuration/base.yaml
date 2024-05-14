@@ -1,5 +1,5 @@
 #! configuration/base.yaml
 
 mysql:
-  database: "database"
-  max_connection: 5
+  database: "iot_protocol_global"
+  max_connections: 5
